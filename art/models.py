@@ -3,10 +3,11 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from datetime import date
 
-from django.contrib.auth import get_user_model
+#from django.contrib.auth import get_user_model
+from django.conf import settings
 
 
-User = get_user_model()
+User = settings.AUTH_USER_MODEL
 
 # Create your models here.
 

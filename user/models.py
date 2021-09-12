@@ -10,5 +10,5 @@ class User(AbstractUser):
         ('admin', 'admin'),
     )
     role = models.CharField(max_length=10, choices=ROLES_CHOICES)
-    email = models.EmailField(blank=False, unique=True, verbose_name='email adress')
+    #email = models.EmailField(blank=False, unique=True, verbose_name='email adress')
     
