@@ -1,13 +1,13 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 
-#from django.contrib.auth import get_user_model
-from django.conf import settings
-from user.models import User
+from django.contrib.auth import get_user_model
+#from django.conf import settings
+#from user.models import User
 
 
 #User = settings.AUTH_USER_MODEL
-#User = User
+User = get_user_model()
 
 # Create your models here.
 
@@ -76,4 +76,7 @@ class Comments(models.Model):
 class Genre_Title(models.Model):
     title = models.ForeignKey(Titles, on_delete=models.CASCADE)
     genre = models.ForeignKey(Genres, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.title
     
