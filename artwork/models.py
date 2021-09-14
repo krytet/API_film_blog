@@ -1,7 +1,7 @@
-from django.db import models
-from django.core.validators import MaxValueValidator, MinValueValidator
-
 from django.contrib.auth import get_user_model
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
+
 #from django.conf import settings
 #from user.models import User
 
@@ -45,16 +45,16 @@ class Titles(models.Model):
     
 
 
-class Reviws(models.Model):
-    titles = models.ForeignKey(Titles, on_delete=models.CASCADE, related_name='reviws')
-    text = models.TextField(db_column='text',db_tablespace='text')
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviws')
+class Reviews(models.Model):
+    titles = models.ForeignKey(Titles, on_delete=models.CASCADE, related_name='reviews')
+    text = models.TextField(db_column='text',db_tablespace='text', blank=False)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
     score = models.IntegerField(
         validators=[
             MaxValueValidator(10),
             MinValueValidator(1)
         ],
-        db_column='score',
+        blank=False,
     )
     pub_date = models.DateTimeField(auto_now_add=True)
 
@@ -64,7 +64,7 @@ class Reviws(models.Model):
 
 
 class Comments(models.Model):
-    reviws = models.ForeignKey(Reviws, on_delete=models.CASCADE, related_name='commets')
+    reviews = models.ForeignKey(Reviews, on_delete=models.CASCADE, related_name='comments', null=True)
     text = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
     pub_date = models.DateTimeField(auto_now_add=True)
@@ -78,5 +78,5 @@ class Genre_Title(models.Model):
     genre = models.ForeignKey(Genres, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.title
+        return f'Сопостовление {self.title}'
     
