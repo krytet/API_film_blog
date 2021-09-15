@@ -3,6 +3,7 @@ from django.http import request
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from rest_framework import mixins
+from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from . import models, permissions, serializers
@@ -67,6 +68,19 @@ class UserViewSet(ModelViewSet):
     serializer_class = serializers.UserSerializer
     lookup_field = 'username'
     permission_classes = (permissions.IsAdmin,)
+
+
+class Profile(RetrieveUpdateAPIView):
+    serializer_class = serializers.UserSerializer
+
+    def get_object(self):
+        queryset = self.request.user
+        return queryset
+
+
+
+    
+
 
 
 
