@@ -145,4 +145,14 @@ REST_FRAMEWORK = {
         'DEFAULT_AUTHENTICATION_CLASSES': [
             'rest_framework_simplejwt.authentication.JWTAuthentication'
         ],
+        'DEFAULT_THROTTLE_CLASSES': [
+            'rest_framework.throttling.UserRateThrottle', # подключение модели user для лимитов
+            'rest_framework.throttling.AnonRateThrottle', #подключение модели anon для лимитов
+        ],
+        'DEFAULT_THROTTLE_RATES': {
+            'user': '10000/day', #  лимит для UserRateThrottle
+            'anon': '1000/day',  #  лимит для AnonRateThrottle
+        },
+        'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination', #подключение пагнации
+        'PAGE_SIZE': 100, #количество элементов на странице
     }
