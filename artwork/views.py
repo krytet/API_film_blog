@@ -1,10 +1,14 @@
 from django.contrib.auth import get_user_model
-from django.http import request
+from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
-from rest_framework import mixins
-from rest_framework.generics import RetrieveUpdateAPIView
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
+import requests
+from rest_framework import mixins, status
+from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
+from rest_framework.response import Response
+from rest_framework.serializers import Serializer
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action
 
 from . import models, permissions, serializers
 
@@ -79,7 +83,49 @@ class Profile(RetrieveUpdateAPIView):
 
 
 
+
+class Registration(CreateAPIView):
+
+
+    def create(self, request, *args, **kwargs):
+        if request.POST['email'] not in User.objects.values_list('email'):
+            password = User.objects.make_random_password()
+            username = request.POST['email'].split('@')[0]
+            profile = {
+                'username' : username,
+                'email' : request.POST['email'],
+            }
+            serializer = serializers.UserSerializer(data=profile)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            user = get_object_or_404(User, username=username)
+            user.set_password(password)
+            user.save()
+            post_data = {
+                'username' : username,
+                'password' : password,
+            }
+            #TODO отпредоктировать ссылку на token_obtain_pair
+            url = requests.post('http://127.0.0.1:8000/api/v1/auth/token/', data=post_data)
+            token = url.json()['access']
+            text = f"Добро пожаловать на наш сервис. Ваш токен для авторизации : {token}" 
+            send_mail(
+                'Регистрация на сайте YaMDb',
+                text,
+                'from@YaMDb.ru',  # Это поле "От кого"
+                [request.POST['email']],  # Это поле "Кому" (можно указать список адресов)
+                fail_silently=False, # Сообщать об ошибках («молчать ли об ошибках?»)
+            )
+            serialize = serializers.RegisterSerializer(profile)
+            return Response(serialize.data, status=status.HTTP_201_CREATED)
+        
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+
     
+
 
 
 

@@ -95,3 +95,10 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('first_name', 'last_name', 'username', 'bio', 'email', 'role')
         model = User
+
+
+class RegisterSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = ('email',)
+        model = User
