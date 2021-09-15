@@ -3,12 +3,10 @@ from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 import requests
-from rest_framework import mixins, status
+from rest_framework import status
 from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
 from rest_framework.response import Response
-from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.decorators import action
 
 from . import models, permissions, serializers
 
@@ -82,10 +80,8 @@ class Profile(RetrieveUpdateAPIView):
         return queryset
 
 
-
-
 class Registration(CreateAPIView):
-
+    permission_classes = ()
 
     def create(self, request, *args, **kwargs):
         if request.POST['email'] not in User.objects.values_list('email'):
